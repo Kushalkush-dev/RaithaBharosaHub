@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.raithabharosa.hub.app-merged_res-59:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.raithabharosa.hub.app-main-61:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\Kushal J\\.gradle\\daemon\\8.4\\com.raithabharosa.hub.app-merged_res-59:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Kushal J\\.gradle\\daemon\\8.4\\com.raithabharosa.hub.app-main-61:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.raithabharosa.hub.app-merged_res-59:/drawable_ic_launcher_legacy.xml.flat",
+        "source": "com.raithabharosa.hub.app-main-61:/drawable/ic_launcher_legacy.xml"
+    },
+    {
+        "merged": "C:\\Users\\Kushal J\\.gradle\\daemon\\8.4\\com.raithabharosa.hub.app-merged_res-59:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Kushal J\\.gradle\\daemon\\8.4\\com.raithabharosa.hub.app-main-61:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.raithabharosa.hub.app-merged_res-59:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.raithabharosa.hub.app-main-61:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.raithabharosa.hub.app-merged_res-59:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.raithabharosa.hub.app-main-61:/mipmap-anydpi-v26/ic_launcher.xml"
+    }
+]
