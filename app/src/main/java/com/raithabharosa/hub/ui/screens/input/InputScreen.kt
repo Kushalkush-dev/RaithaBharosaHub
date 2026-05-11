@@ -24,20 +24,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.raithabharosa.hub.TranslationManager
 import com.raithabharosa.hub.data.repository.FarmerRepository
 import com.raithabharosa.hub.ui.theme.GreenGo
 import com.raithabharosa.hub.ui.theme.RedWait
 
 @Composable
-fun InputScreen(repository: FarmerRepository) {
+fun InputScreen(
+    repository: FarmerRepository,
+    showKannadaLabels: Boolean = false
+) {
     val viewModel = viewModel { InputViewModel(repository) }
     val state by viewModel.state.collectAsState()
+
+    val t = { text: String -> TranslationManager.translate(text, showKannadaLabels) }
 
     Column(
         modifier = Modifier
@@ -46,13 +51,13 @@ fun InputScreen(repository: FarmerRepository) {
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Soil Input Center",
+            text = t("Soil Input Center"),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
 
         Text(
-            text = "Enter soil test results to get accurate recommendations",
+            text = t("Enter soil test results to get accurate recommendations"),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
         )
@@ -60,37 +65,37 @@ fun InputScreen(repository: FarmerRepository) {
         Spacer(modifier = Modifier.height(24.dp))
 
         SoilInputField(
-            label = "Soil Moisture (%)",
+            label = t("Soil Moisture (%)"),
             value = state.moisture,
             onValueChange = { viewModel.updateMoisture(it) },
-            placeholder = "e.g., 25"
+            placeholder = t("e.g., 25")
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         SoilInputField(
-            label = "Nitrogen - N (kg/ha)",
+            label = t("Nitrogen - N (kg/ha)"),
             value = state.nitrogen,
             onValueChange = { viewModel.updateNitrogen(it) },
-            placeholder = "e.g., 60"
+            placeholder = t("e.g., 60")
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         SoilInputField(
-            label = "Phosphorus - P (kg/ha)",
+            label = t("Phosphorus - P (kg/ha)"),
             value = state.phosphorus,
             onValueChange = { viewModel.updatePhosphorus(it) },
-            placeholder = "e.g., 30"
+            placeholder = t("e.g., 30")
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         SoilInputField(
-            label = "Potassium - K (kg/ha)",
+            label = t("Potassium - K (kg/ha)"),
             value = state.potassium,
             onValueChange = { viewModel.updatePotassium(it) },
-            placeholder = "e.g., 25"
+            placeholder = t("e.g., 25")
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -105,13 +110,13 @@ fun InputScreen(repository: FarmerRepository) {
                 colors = ButtonDefaults.buttonColors(containerColor = GreenGo)
             ) {
                 Text(
-                    text = if (state.isSaved) "Saved!" else "Save",
+                    text = if (state.isSaved) t("Saved!") else t("Save"),
                     fontWeight = FontWeight.Bold
                 )
             }
-            
+
             Spacer(modifier = Modifier.width(12.dp))
-            
+
             OutlinedButton(
                 onClick = { viewModel.clearSoilData() },
                 modifier = Modifier.height(56.dp),
@@ -119,14 +124,14 @@ fun InputScreen(repository: FarmerRepository) {
             ) {
                 Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Clear", fontWeight = FontWeight.Medium)
+                Text(t("Clear"), fontWeight = FontWeight.Medium)
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Note: Leave fields empty to use default values. Clear resets all values.",
+            text = t("Note: Leave fields empty to use default values. Clear resets all values."),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
         )

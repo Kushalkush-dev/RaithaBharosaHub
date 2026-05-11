@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.raithabharosa.hub.TranslationManager
 import com.raithabharosa.hub.data.repository.FarmerRepository
 import com.raithabharosa.hub.domain.model.ActionPlan
 import com.raithabharosa.hub.domain.model.DailyForecast
@@ -45,10 +46,13 @@ import com.raithabharosa.hub.ui.theme.RedWait
 @Composable
 fun CalendarScreen(
     repository: FarmerRepository,
-    generateActionPlan: GenerateActionPlanUseCase
+    generateActionPlan: GenerateActionPlanUseCase,
+    showKannadaLabels: Boolean = false
 ) {
     val viewModel = viewModel { CalendarViewModel(repository, generateActionPlan) }
     val state by viewModel.state.collectAsState()
+
+    val t = { text: String -> TranslationManager.translate(text, showKannadaLabels) }
 
     LazyColumn(
         modifier = Modifier
@@ -63,7 +67,7 @@ fun CalendarScreen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Krishi Calendar",
+                        text = t("Krishi Calendar"),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -86,7 +90,7 @@ fun CalendarScreen(
                     }
 
                     Text(
-                        text = "7-Day Action Plan",
+                        text = t("7-Day Action Plan"),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
@@ -124,7 +128,7 @@ fun CalendarScreen(
         }
 
         items(state.actionPlans) { plan ->
-            ActionPlanCard(plan = plan)
+            ActionPlanCard(plan = plan, t = t)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
@@ -160,7 +164,10 @@ private fun WeatherChip(forecast: DailyForecast) {
 }
 
 @Composable
-private fun ActionPlanCard(plan: ActionPlan) {
+private fun ActionPlanCard(
+    plan: ActionPlan,
+    t: (String) -> String
+) {
     val backgroundColor = when {
         plan.isUrgent -> RedWait
         plan.action.contains("Delay") -> Color(0xFFFF9800)
@@ -203,7 +210,7 @@ private fun ActionPlanCard(plan: ActionPlan) {
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "URGENT",
+                            text = t("URGENT"),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
                             color = Color.White

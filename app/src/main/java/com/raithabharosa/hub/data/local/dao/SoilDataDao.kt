@@ -15,6 +15,9 @@ interface SoilDataDao {
     @Query("SELECT * FROM soil_data WHERE farmerId = :farmerId ORDER BY recordedAt DESC")
     fun getSoilDataHistory(farmerId: Long): Flow<List<SoilDataEntity>>
 
+    @Query("SELECT * FROM soil_data WHERE farmerId = :farmerId AND recordedAt >= :startTime ORDER BY recordedAt ASC")
+    fun getSoilDataInRange(farmerId: Long, startTime: Long): Flow<List<SoilDataEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSoilData(soilData: SoilDataEntity): Long
 

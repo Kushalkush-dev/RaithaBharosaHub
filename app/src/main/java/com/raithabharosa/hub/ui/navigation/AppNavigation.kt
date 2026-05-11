@@ -19,6 +19,7 @@ import com.raithabharosa.hub.ui.screens.dashboard.DashboardScreen
 import com.raithabharosa.hub.ui.screens.history.HistoryScreen
 import com.raithabharosa.hub.ui.screens.input.InputScreen
 import com.raithabharosa.hub.ui.screens.onboarding.OnboardingScreen
+import com.raithabharosa.hub.ui.screens.trends.TrendScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -77,18 +78,32 @@ fun AppNavigation(
         }
 
         composable(Screen.Input.route) {
-            InputScreen(repository = repository)
+            InputScreen(
+                repository = repository,
+                showKannadaLabels = showKannadaLabels
+            )
         }
 
         composable(Screen.Calendar.route) {
             CalendarScreen(
                 repository = repository,
-                generateActionPlan = generateActionPlan
+                generateActionPlan = generateActionPlan,
+                showKannadaLabels = showKannadaLabels
             )
         }
 
         composable(Screen.History.route) {
-            HistoryScreen(repository = repository)
+            HistoryScreen(
+                repository = repository,
+                showKannadaLabels = showKannadaLabels
+            )
+        }
+
+        composable(Screen.Trends.route) {
+            TrendScreen(
+                repository = repository,
+                showKannadaLabels = showKannadaLabels
+            )
         }
     }
 }

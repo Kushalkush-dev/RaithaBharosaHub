@@ -22,11 +22,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -35,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,18 +52,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.raithabharosa.hub.TranslationManager
 import com.raithabharosa.hub.data.repository.FarmerRepository
 import com.raithabharosa.hub.domain.model.CropProfile
 import com.raithabharosa.hub.domain.model.CropType
 import com.raithabharosa.hub.ui.theme.GreenGo
+import com.raithabharosa.hub.ui.theme.OrangeCaution
 import com.raithabharosa.hub.ui.theme.RedWait
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun HistoryScreen(repository: FarmerRepository) {
+fun HistoryScreen(
+    repository: FarmerRepository,
+    showKannadaLabels: Boolean = false
+) {
     val viewModel = viewModel { HistoryViewModel(repository) }
     val state by viewModel.state.collectAsState()
-    
+
+    val t = { text: String -> TranslationManager.translate(text, showKannadaLabels) }
+
     var showAddDialog by remember { mutableStateOf(false) }
+    var showHarvestDialog by remember { mutableStateOf(false) }
+    var selectedCropForHarvest by remember { mutableStateOf<CropProfile?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -69,13 +86,13 @@ fun HistoryScreen(repository: FarmerRepository) {
         ) {
             item {
                 Text(
-                    text = "My Crops",
+                    text = t("My Crops"),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Manage your farm profiles",
+                    text = t("Manage your farm profiles"),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
@@ -84,7 +101,7 @@ fun HistoryScreen(repository: FarmerRepository) {
 
             if (state.cropProfiles.isEmpty()) {
                 item {
-                    EmptyCropsState()
+                    EmptyCropsState(t = t)
                 }
             } else {
                 items(state.cropProfiles) { profile ->
@@ -92,12 +109,17 @@ fun HistoryScreen(repository: FarmerRepository) {
                         profile = profile,
                         isActive = profile.id == state.activeCropId,
                         onActivate = { viewModel.setActiveCrop(profile.id) },
-                        onDelete = { viewModel.deleteCropProfile(profile.id) }
+                        onDelete = { viewModel.deleteCropProfile(profile.id) },
+                        onRecordHarvest = {
+                            selectedCropForHarvest = profile
+                            showHarvestDialog = true
+                        },
+                        t = t
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
-            
+
             item {
                 Spacer(modifier = Modifier.height(80.dp))
             }
@@ -110,7 +132,7 @@ fun HistoryScreen(repository: FarmerRepository) {
                 .padding(24.dp),
             containerColor = GreenGo
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Crop", tint = MaterialTheme.colorScheme.onPrimary)
+            Icon(Icons.Default.Add, contentDescription = t("Add Crop"), tint = MaterialTheme.colorScheme.onPrimary)
         }
 
         if (showAddDialog) {
@@ -119,14 +141,31 @@ fun HistoryScreen(repository: FarmerRepository) {
                     viewModel.addCropProfile(name, crop, plot, location)
                     showAddDialog = false
                 },
-                onDismiss = { showAddDialog = false }
+                onDismiss = { showAddDialog = false },
+                t = t
+            )
+        }
+
+        if (showHarvestDialog && selectedCropForHarvest != null) {
+            RecordHarvestDialog(
+                cropName = selectedCropForHarvest!!.name,
+                onSave = { harvestDate, yieldAmount, notes ->
+                    viewModel.recordHarvest(selectedCropForHarvest!!.id, harvestDate, yieldAmount, notes)
+                    showHarvestDialog = false
+                    selectedCropForHarvest = null
+                },
+                onDismiss = {
+                    showHarvestDialog = false
+                    selectedCropForHarvest = null
+                },
+                t = t
             )
         }
     }
 }
 
 @Composable
-private fun EmptyCropsState() {
+private fun EmptyCropsState(t: (String) -> String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -145,12 +184,12 @@ private fun EmptyCropsState() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "No crops yet",
+                text = t("No crops yet"),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "Tap + to add your first crop",
+                text = t("Tap + to add your first crop"),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
             )
@@ -163,7 +202,9 @@ private fun CropProfileCard(
     profile: CropProfile,
     isActive: Boolean,
     onActivate: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onRecordHarvest: () -> Unit,
+    t: (String) -> String
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -172,93 +213,248 @@ private fun CropProfileCard(
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(if (isActive) GreenGo else MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(if (isActive) GreenGo else MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Agriculture,
+                        contentDescription = null,
+                        tint = if (isActive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = profile.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (isActive) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = t("Active"),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = GreenGo,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    Text(
+                        text = "${t(profile.cropType.displayName)} • ${profile.plotSize.toInt()} ${t("acres")}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                    )
+                }
+
+                if (!isActive) {
+                    IconButton(onClick = onActivate) {
+                        Icon(
+                            Icons.Default.Check,
+                            contentDescription = t("Set Active"),
+                            tint = GreenGo
+                        )
+                    }
+                }
+
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = t("Delete"),
+                        tint = RedWait.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                onClick = onRecordHarvest,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = OrangeCaution)
             ) {
                 Icon(
                     Icons.Default.Agriculture,
                     contentDescription = null,
-                    tint = if (isActive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.size(18.dp)
                 )
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = profile.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    if (isActive) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Active",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = GreenGo,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-                Text(
-                    text = "${profile.cropType.displayName} • ${profile.plotSize.toInt()} acres",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
-                )
-            }
-            
-            if (!isActive) {
-                IconButton(onClick = onActivate) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = "Set Active",
-                        tint = GreenGo
-                    )
-                }
-            }
-            
-            IconButton(onClick = onDelete) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = RedWait.copy(alpha = 0.7f)
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(t("Record Harvest"), fontWeight = FontWeight.Medium)
             }
         }
     }
 }
 
 @Composable
+private fun RecordHarvestDialog(
+    cropName: String,
+    onSave: (Long, Float, String) -> Unit,
+    onDismiss: () -> Unit,
+    t: (String) -> String
+) {
+    var harvestDate by remember {
+        mutableStateOf(System.currentTimeMillis())
+    }
+    var yieldAmount by remember { mutableStateOf("") }
+    var notes by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    val calendar = Calendar.getInstance()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("${t("Record Harvest")} - $cropName")
+        },
+        text = {
+            Column {
+                Text(
+                    text = t("Harvest Date"),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Button(
+                    onClick = { showDatePicker = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Text(
+                        text = dateFormat.format(Date(harvestDate)),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = yieldAmount,
+                    onValueChange = { yieldAmount = it },
+                    label = { Text(t("Yield (Quintals)")) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    placeholder = { Text("e.g., 10") }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text(t("Notes")) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = false,
+                    maxLines = 3,
+                    placeholder = { Text("Optional notes...") }
+                )
+
+                if (showDatePicker) {
+                    SimpleDatePickerDialog(
+                        initialDate = harvestDate,
+                        onDateSelected = { selectedDate ->
+                            harvestDate = selectedDate
+                            showDatePicker = false
+                        },
+                        onDismiss = { showDatePicker = false },
+                        t = t
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val yield = yieldAmount.toFloatOrNull() ?: 0f
+                    if (yield > 0) {
+                        onSave(harvestDate, yield, notes)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = GreenGo),
+                enabled = yieldAmount.toFloatOrNull()?.let { it > 0 } == true
+            ) {
+                Text(t("Save Harvest"))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(t("Cancel"))
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SimpleDatePickerDialog(
+    initialDate: Long,
+    onDateSelected: (Long) -> Unit,
+    onDismiss: () -> Unit,
+    t: (String) -> String
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialDate
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { onDateSelected(it) }
+                }
+            ) {
+                Text(t("Done"))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(t("Cancel"))
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
+}
+
+@Composable
 private fun AddCropDialog(
     onAdd: (String, CropType, Float, String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    t: (String) -> String
 ) {
     var name by remember { mutableStateOf("") }
     var selectedCrop by remember { mutableStateOf(CropType.SUGARCANE) }
     var plotSize by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
     var showCropPicker by remember { mutableStateOf(false) }
-    
+
     if (showCropPicker) {
         AlertDialog(
             onDismissRequest = { showCropPicker = false },
-            title = { Text("Select Crop Type") },
+            title = { Text(t("Select Crop Type")) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     CropType.entries.forEach { crop ->
-@OptIn(ExperimentalMaterial3Api::class)
-                    Card(
+                        @OptIn(ExperimentalMaterial3Api::class)
+                        Card(
                             onClick = {
                                 selectedCrop = crop
                                 showCropPicker = false
@@ -268,11 +464,13 @@ private fun AddCropDialog(
                             )
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(crop.displayName, fontWeight = FontWeight.Medium)
+                                Text(t(crop.displayName), fontWeight = FontWeight.Medium)
                                 if (selectedCrop == crop) {
                                     Icon(Icons.Default.Check, contentDescription = null, tint = GreenGo)
                                 }
@@ -283,43 +481,43 @@ private fun AddCropDialog(
             },
             confirmButton = {
                 TextButton(onClick = { showCropPicker = false }) {
-                    Text("Done")
+                    Text(t("Done"))
                 }
             }
         )
     } else {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Add New Crop") },
+            title = { Text(t("Add New Crop")) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Crop Name") },
+                        label = { Text(t("Crop Name")) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        placeholder = { Text("e.g., North Field") }
+                        placeholder = { Text(t("e.g., North Field")) }
                     )
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
-                    Text("Crop Type", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+
+                    Text(t("Crop Type"), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Button(
                         onClick = { showCropPicker = true },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-                        Text(selectedCrop.displayName, color = MaterialTheme.colorScheme.onSurface)
+                        Text(t(selectedCrop.displayName), color = MaterialTheme.colorScheme.onSurface)
                     }
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     OutlinedTextField(
                         value = plotSize,
                         onValueChange = { plotSize = it },
-                        label = { Text("Plot Size (Acres)") },
+                        label = { Text(t("Plot Size (Acres)")) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -336,12 +534,12 @@ private fun AddCropDialog(
                     colors = ButtonDefaults.buttonColors(containerColor = GreenGo),
                     enabled = name.isNotBlank() && plotSize.isNotBlank()
                 ) {
-                    Text("Add Crop")
+                    Text(t("Add Crop"))
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(t("Cancel"))
                 }
             }
         )

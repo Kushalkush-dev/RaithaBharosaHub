@@ -102,4 +102,41 @@ class HistoryViewModel(
             }
         }
     }
+
+    fun recordHarvest(profileId: Long, harvestDate: Long, yieldAmount: Float, notes: String) {
+        viewModelScope.launch {
+            try {
+                val farmer = repository.getCurrentFarmerSync() ?: return@launch
+                val profile = _state.value.cropProfiles.find { it.id == profileId }
+                    ?: return@launch
+
+                val season = getCurrentSeason()
+                val history = CropHistory(
+                    farmerId = farmer.id,
+                    cropType = profile.cropType.displayName,
+                    sowingDate = System.currentTimeMillis(),
+                    harvestDate = harvestDate,
+                    yield = yieldAmount,
+                    notes = notes,
+                    season = season,
+                    year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+                )
+
+                withContext(Dispatchers.IO) {
+                    repository.saveCropHistory(history)
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+
+    private fun getCurrentSeason(): String {
+        val month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)
+        return when (month) {
+            in 0..4 -> "Rabi"
+            in 5..9 -> "Kharif"
+            else -> "Zaid"
+        }
+    }
 }

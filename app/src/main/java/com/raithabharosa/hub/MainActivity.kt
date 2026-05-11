@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Grass
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -109,10 +110,11 @@ class MainActivity : ComponentActivity() {
 data class NavItem(val route: String, val icon: ImageVector, val label: String, val labelKn: String)
 
 val bottomNavItems = listOf(
-    NavItem("dashboard", Icons.Default.Dashboard, "Dashboard", "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"),
+    NavItem("dashboard", Icons.Default.Dashboard, "Dashboard", "ಡ್ಯಾಶ್"),
     NavItem("input", Icons.Default.Edit, "Input", "ಇನ್ಪುಟ್"),
     NavItem("calendar", Icons.Default.CalendarMonth, "Calendar", "ಕ್ಯಾಲೆಂಡರ್"),
-    NavItem("history", Icons.Default.Grass, "My Crops", "ನನ್ನ ಬೆಳೆಗಳು")
+    NavItem("trends", Icons.Default.ShowChart, "Trends", "ಟ್ರೆಂಡ್"),
+    NavItem("history", Icons.Default.Grass, "My Crops", "ಬೆಳೆಗಳು")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,7 +174,13 @@ fun MainApp(
                         val selected = currentRoute == item.route
                         NavigationBarItem(
                             icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(if (showKannadaLabels) item.labelKn else item.label) },
+                            label = { 
+                                Text(
+                                    if (showKannadaLabels) item.labelKn else item.label,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                ) 
+                            },
                             selected = selected,
                             onClick = {
                                 if (currentRoute != item.route) {

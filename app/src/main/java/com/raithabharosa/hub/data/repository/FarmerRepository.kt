@@ -16,9 +16,17 @@ import com.raithabharosa.hub.domain.model.CropType
 import com.raithabharosa.hub.domain.model.DailyForecast
 import com.raithabharosa.hub.domain.model.Farmer
 import com.raithabharosa.hub.domain.model.SoilData
+import com.raithabharosa.hub.domain.model.SoilTrendData
+import com.raithabharosa.hub.domain.model.TrendDataPoint
 import com.raithabharosa.hub.domain.model.WeatherData
+import com.raithabharosa.hub.domain.model.WeatherTrendData
+import com.raithabharosa.hub.domain.model.YieldTrendData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private const val TAG = "FarmerRepository"
 
@@ -278,6 +286,48 @@ class FarmerRepository(private val database: AppDatabase) {
             plotSize = plotSize,
             location = location,
             isActive = isActive
+        )
+    }
+
+    fun getSoilTrendData(farmerId: Long, startTime: Long): Flow<List<SoilDataEntity>> {
+        return soilDataDao.getSoilDataInRange(farmerId, startTime)
+    }
+
+    fun getYieldTrendData(farmerId: Long): Flow<List<CropHistoryEntity>> {
+        return cropHistoryDao.getYieldHistory(farmerId)
+    }
+
+    suspend fun getWeatherTrendData(farmerId: Long): List<WeatherTrendData> {
+        return emptyList()
+    }
+
+    fun mapSoilEntitiesToTrendData(entities: List<SoilDataEntity>): SoilTrendData {
+        val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+
+        return SoilTrendData(
+            moistureData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.moisture) },
+            nitrogenData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.nitrogen) },
+            phosphorusData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.phosphorus) },
+            potassiumData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.potassium) },
+            phData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.ph) },
+            temperatureData = entities.map { TrendDataPoint(it.recordedAt, dateFormat.format(Date(it.recordedAt)), it.temperature) }
+        )
+    }
+
+    fun mapCropHistoryToYieldTrend(entities: List<CropHistoryEntity>): YieldTrendData {
+        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+
+        return YieldTrendData(
+            yieldData = entities.mapNotNull { entity ->
+                if (entity.harvestDate != null && entity.yield > 0) {
+                    TrendDataPoint(
+                        timestamp = entity.harvestDate,
+                        label = dateFormat.format(Date(entity.harvestDate)),
+                        value = entity.yield,
+                        cropType = entity.cropType
+                    )
+                } else null
+            }
         )
     }
 }

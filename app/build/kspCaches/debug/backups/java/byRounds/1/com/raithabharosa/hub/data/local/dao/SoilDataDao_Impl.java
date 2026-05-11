@@ -231,6 +231,66 @@ public final class SoilDataDao_Impl implements SoilDataDao {
     });
   }
 
+  @Override
+  public Flow<List<SoilDataEntity>> getSoilDataInRange(final long farmerId, final long startTime) {
+    final String _sql = "SELECT * FROM soil_data WHERE farmerId = ? AND recordedAt >= ? ORDER BY recordedAt ASC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, farmerId);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, startTime);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"soil_data"}, new Callable<List<SoilDataEntity>>() {
+      @Override
+      @NonNull
+      public List<SoilDataEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfFarmerId = CursorUtil.getColumnIndexOrThrow(_cursor, "farmerId");
+          final int _cursorIndexOfMoisture = CursorUtil.getColumnIndexOrThrow(_cursor, "moisture");
+          final int _cursorIndexOfNitrogen = CursorUtil.getColumnIndexOrThrow(_cursor, "nitrogen");
+          final int _cursorIndexOfPhosphorus = CursorUtil.getColumnIndexOrThrow(_cursor, "phosphorus");
+          final int _cursorIndexOfPotassium = CursorUtil.getColumnIndexOrThrow(_cursor, "potassium");
+          final int _cursorIndexOfPh = CursorUtil.getColumnIndexOrThrow(_cursor, "ph");
+          final int _cursorIndexOfTemperature = CursorUtil.getColumnIndexOrThrow(_cursor, "temperature");
+          final int _cursorIndexOfRecordedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "recordedAt");
+          final List<SoilDataEntity> _result = new ArrayList<SoilDataEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final SoilDataEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpFarmerId;
+            _tmpFarmerId = _cursor.getLong(_cursorIndexOfFarmerId);
+            final float _tmpMoisture;
+            _tmpMoisture = _cursor.getFloat(_cursorIndexOfMoisture);
+            final float _tmpNitrogen;
+            _tmpNitrogen = _cursor.getFloat(_cursorIndexOfNitrogen);
+            final float _tmpPhosphorus;
+            _tmpPhosphorus = _cursor.getFloat(_cursorIndexOfPhosphorus);
+            final float _tmpPotassium;
+            _tmpPotassium = _cursor.getFloat(_cursorIndexOfPotassium);
+            final float _tmpPh;
+            _tmpPh = _cursor.getFloat(_cursorIndexOfPh);
+            final float _tmpTemperature;
+            _tmpTemperature = _cursor.getFloat(_cursorIndexOfTemperature);
+            final long _tmpRecordedAt;
+            _tmpRecordedAt = _cursor.getLong(_cursorIndexOfRecordedAt);
+            _item = new SoilDataEntity(_tmpId,_tmpFarmerId,_tmpMoisture,_tmpNitrogen,_tmpPhosphorus,_tmpPotassium,_tmpPh,_tmpTemperature,_tmpRecordedAt);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
   @NonNull
   public static List<Class<?>> getRequiredConverters() {
     return Collections.emptyList();

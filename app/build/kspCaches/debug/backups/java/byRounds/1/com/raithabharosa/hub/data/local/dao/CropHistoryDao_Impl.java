@@ -245,6 +245,68 @@ public final class CropHistoryDao_Impl implements CropHistoryDao {
     });
   }
 
+  @Override
+  public Flow<List<CropHistoryEntity>> getYieldHistory(final long farmerId) {
+    final String _sql = "SELECT * FROM crop_history WHERE farmerId = ? AND harvestDate IS NOT NULL AND yield > 0 ORDER BY harvestDate ASC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, farmerId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"crop_history"}, new Callable<List<CropHistoryEntity>>() {
+      @Override
+      @NonNull
+      public List<CropHistoryEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfFarmerId = CursorUtil.getColumnIndexOrThrow(_cursor, "farmerId");
+          final int _cursorIndexOfCropType = CursorUtil.getColumnIndexOrThrow(_cursor, "cropType");
+          final int _cursorIndexOfSowingDate = CursorUtil.getColumnIndexOrThrow(_cursor, "sowingDate");
+          final int _cursorIndexOfHarvestDate = CursorUtil.getColumnIndexOrThrow(_cursor, "harvestDate");
+          final int _cursorIndexOfYield = CursorUtil.getColumnIndexOrThrow(_cursor, "yield");
+          final int _cursorIndexOfNotes = CursorUtil.getColumnIndexOrThrow(_cursor, "notes");
+          final int _cursorIndexOfSeason = CursorUtil.getColumnIndexOrThrow(_cursor, "season");
+          final int _cursorIndexOfYear = CursorUtil.getColumnIndexOrThrow(_cursor, "year");
+          final List<CropHistoryEntity> _result = new ArrayList<CropHistoryEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final CropHistoryEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpFarmerId;
+            _tmpFarmerId = _cursor.getLong(_cursorIndexOfFarmerId);
+            final String _tmpCropType;
+            _tmpCropType = _cursor.getString(_cursorIndexOfCropType);
+            final long _tmpSowingDate;
+            _tmpSowingDate = _cursor.getLong(_cursorIndexOfSowingDate);
+            final Long _tmpHarvestDate;
+            if (_cursor.isNull(_cursorIndexOfHarvestDate)) {
+              _tmpHarvestDate = null;
+            } else {
+              _tmpHarvestDate = _cursor.getLong(_cursorIndexOfHarvestDate);
+            }
+            final float _tmpYield;
+            _tmpYield = _cursor.getFloat(_cursorIndexOfYield);
+            final String _tmpNotes;
+            _tmpNotes = _cursor.getString(_cursorIndexOfNotes);
+            final String _tmpSeason;
+            _tmpSeason = _cursor.getString(_cursorIndexOfSeason);
+            final int _tmpYear;
+            _tmpYear = _cursor.getInt(_cursorIndexOfYear);
+            _item = new CropHistoryEntity(_tmpId,_tmpFarmerId,_tmpCropType,_tmpSowingDate,_tmpHarvestDate,_tmpYield,_tmpNotes,_tmpSeason,_tmpYear);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
   @NonNull
   public static List<Class<?>> getRequiredConverters() {
     return Collections.emptyList();

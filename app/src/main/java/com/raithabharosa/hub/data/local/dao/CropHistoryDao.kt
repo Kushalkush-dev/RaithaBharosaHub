@@ -15,6 +15,9 @@ interface CropHistoryDao {
     @Query("SELECT * FROM crop_history WHERE farmerId = :farmerId AND season = :season ORDER BY sowingDate DESC")
     fun getCropHistoryBySeason(farmerId: Long, season: String): Flow<List<CropHistoryEntity>>
 
+    @Query("SELECT * FROM crop_history WHERE farmerId = :farmerId AND harvestDate IS NOT NULL AND yield > 0 ORDER BY harvestDate ASC")
+    fun getYieldHistory(farmerId: Long): Flow<List<CropHistoryEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCropHistory(history: CropHistoryEntity): Long
 

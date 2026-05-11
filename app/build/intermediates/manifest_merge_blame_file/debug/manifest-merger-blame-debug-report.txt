@@ -86,46 +86,46 @@
 50            android:value="@integer/google_play_services_version" />
 50-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\Kushal J\.gradle\caches\transforms-3\5ca6a77e09077e46f72d3bba54bc0f38\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:23:13-66
 51
-52        <activity
-52-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:23:9-25:39
-53            android:name="androidx.activity.ComponentActivity"
-53-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:24:13-63
-54            android:exported="true" />
-54-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:25:13-36
-55        <activity
-55-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:23:9-25:39
-56            android:name="androidx.compose.ui.tooling.PreviewActivity"
-56-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:24:13-71
-57            android:exported="true" />
-57-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:25:13-36
-58
-59        <provider
-59-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:24:9-32:20
-60            android:name="androidx.startup.InitializationProvider"
-60-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:25:13-67
-61            android:authorities="com.raithabharosa.hub.androidx-startup"
-61-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:26:13-68
-62            android:exported="false" >
-62-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:27:13-37
-63            <meta-data
-63-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:29:13-31:52
-64                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-64-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:30:17-75
-65                android:value="androidx.startup" />
-65-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:31:17-49
-66            <meta-data
-66-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
-67                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-67-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
-68                android:value="androidx.startup" />
-68-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
-69            <meta-data
-69-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
-70                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-70-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
-71                android:value="androidx.startup" />
-71-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
-72        </provider>
+52        <provider
+52-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:24:9-32:20
+53            android:name="androidx.startup.InitializationProvider"
+53-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:25:13-67
+54            android:authorities="com.raithabharosa.hub.androidx-startup"
+54-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:26:13-68
+55            android:exported="false" >
+55-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:27:13-37
+56            <meta-data
+56-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:29:13-31:52
+57                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+57-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:30:17-75
+58                android:value="androidx.startup" />
+58-->[androidx.emoji2:emoji2:1.4.0] C:\Users\Kushal J\.gradle\caches\transforms-3\6574bd87862c3ce90c9002237ea83fc5\transformed\jetified-emoji2-1.4.0\AndroidManifest.xml:31:17-49
+59            <meta-data
+59-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+60                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+60-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+61                android:value="androidx.startup" />
+61-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kushal J\.gradle\caches\transforms-3\2b11ee7d38aba9a6c5a48398758306f1\transformed\jetified-lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+62            <meta-data
+62-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+63                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+63-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+64                android:value="androidx.startup" />
+64-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Kushal J\.gradle\caches\transforms-3\122b2b06a1fc6db8c5997c8b308b573c\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+65        </provider>
+66
+67        <activity
+67-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:23:9-25:39
+68            android:name="androidx.activity.ComponentActivity"
+68-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:24:13-63
+69            android:exported="true" />
+69-->[androidx.compose.ui:ui-test-manifest:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\80b5516499c59a7097442f579d6b8dbe\transformed\jetified-ui-test-manifest-1.5.4\AndroidManifest.xml:25:13-36
+70        <activity
+70-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:23:9-25:39
+71            android:name="androidx.compose.ui.tooling.PreviewActivity"
+71-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:24:13-71
+72            android:exported="true" />
+72-->[androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\Kushal J\.gradle\caches\transforms-3\fbd67b9325acefe9735b570706056c47\transformed\jetified-ui-tooling-release\AndroidManifest.xml:25:13-36
 73
 74        <service
 74-->[androidx.room:room-runtime:2.6.1] C:\Users\Kushal J\.gradle\caches\transforms-3\dada826961c3578e0af129baa8c6f862\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
