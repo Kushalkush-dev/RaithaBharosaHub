@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Grass
@@ -121,6 +122,7 @@ data class NavItem(val route: String, val icon: ImageVector, val label: String, 
 val bottomNavItems = listOf(
     NavItem("dashboard", Icons.Default.Dashboard, "Dashboard", "ಡ್ಯಾಶ್"),
     NavItem("input", Icons.Default.Edit, "Input", "ಇನ್ಪುಟ್"),
+    NavItem("chat", Icons.Default.Chat, "Sahaya", "ಸಹಾಯ"),
     NavItem("calendar", Icons.Default.CalendarMonth, "Calendar", "ಕ್ಯಾ"),
     NavItem("trends", Icons.Default.ShowChart, "Trends", "ಟ್ರೆಂಡ್"),
     NavItem("history", Icons.Default.Grass, "Crops", "ಬೆಳೆ")

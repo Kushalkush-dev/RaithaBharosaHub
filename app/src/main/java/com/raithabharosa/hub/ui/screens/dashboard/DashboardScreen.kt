@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +20,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Grass
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -63,7 +68,8 @@ import com.raithabharosa.hub.ui.theme.RedWait
 fun DashboardScreen(
     repository: FarmerRepository,
     calculateSowingIndex: CalculateSowingIndexUseCase,
-    showKannadaLabels: Boolean = false
+    showKannadaLabels: Boolean = false,
+    onNavigateToMyCrops: () -> Unit = {}
 ) {
     val viewModel = viewModel { DashboardViewModel(repository, calculateSowingIndex) }
     val state by viewModel.state.collectAsState()
@@ -87,6 +93,7 @@ fun DashboardScreen(
             "My Crops" -> "ನನ್ನ ಬೆಳೆಗಳು"
             "Switch Crop" -> "ಬೆಳೆ ಬದಲಿಸಿ"
             "Add Crop" -> "ಹೊಸ ಬೆಳೆ"
+            "View Detailed History" -> "ವಿವರವಾದ ಇತಿಹಾಸವನ್ನು ವೀಕ್ಷಿಸಿ"
             else -> key
         }
     }
@@ -103,7 +110,7 @@ fun DashboardScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            CropSwitcherSection(state, translate)
+            CropSwitcherSection(state, onNavigateToMyCrops, translate)
             
             Spacer(modifier = Modifier.height(24.dp))
             
@@ -137,21 +144,40 @@ fun DashboardScreen(
 }
 
 @Composable
-private fun CropSwitcherSection(state: DashboardState, t: (String) -> String) {
+private fun CropSwitcherSection(
+    state: DashboardState, 
+    onNavigateToMyCrops: () -> Unit,
+    t: (String) -> String
+) {
     val profiles = state.cropProfiles
     
-    if (profiles.isNotEmpty()) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = t("My Crops"),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
+                
+                IconButton(onClick = onNavigateToMyCrops) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "Go to My Crops",
+                        tint = GreenGo
+                    )
+                }
+            }
+            
+            if (profiles.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -165,6 +191,29 @@ private fun CropSwitcherSection(state: DashboardState, t: (String) -> String) {
                         )
                     }
                 }
+            }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            Button(
+                onClick = onNavigateToMyCrops,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = GreenGo.copy(alpha = 0.1f)),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                Icon(
+                    Icons.Default.Grass,
+                    contentDescription = null,
+                    tint = GreenGo,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = t("View Detailed History"),
+                    color = GreenGo,
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
         }
     }

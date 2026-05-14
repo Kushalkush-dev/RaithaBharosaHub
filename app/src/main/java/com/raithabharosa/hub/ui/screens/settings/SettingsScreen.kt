@@ -1,5 +1,7 @@
 package com.raithabharosa.hub.ui.screens.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
@@ -153,6 +156,22 @@ fun SettingsScreen(
                     subtitle = t("Sign out of your account"),
                     onClick = { showLogoutDialog = true },
                     isDestructive = true,
+                    t = t
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            SettingsSection(title = t("About")) {
+                SettingsItem(
+                    icon = Icons.Default.Info,
+                    title = t("App Info"),
+                    subtitle = "Developed by Kushal J",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Kushalkush-dev/"))
+                        context.startActivity(intent)
+                    },
                     t = t
                 )
             }

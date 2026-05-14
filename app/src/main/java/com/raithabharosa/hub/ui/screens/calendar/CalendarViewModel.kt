@@ -77,7 +77,17 @@ class CalendarViewModel(
                 }
                 val dailyForecasts = forecastResult.getOrNull() ?: emptyList()
                 
-                val plans = generateActionPlan(dailyForecasts)
+                val cropInfo = if (farmer != null) {
+                    "Farmer Name: ${farmer.name}, Primary Crop: ${farmer.cropType.displayName}"
+                } else {
+                    "General agriculture"
+                }
+
+                val plans = generateActionPlan(
+                    cropInfo = cropInfo,
+                    dailyForecasts = dailyForecasts,
+                    isKannada = false
+                )
                 _state.value = _state.value.copy(
                     actionPlans = plans,
                     dailyForecasts = dailyForecasts,
@@ -86,7 +96,7 @@ class CalendarViewModel(
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "Error: ${e.message}")
-                val plans = generateActionPlan(emptyList())
+                val plans = generateActionPlan("General agriculture", emptyList())
                 _state.value = _state.value.copy(
                     actionPlans = plans,
                     isLoading = false,

@@ -21,6 +21,7 @@ import com.raithabharosa.hub.ui.screens.input.InputScreen
 import com.raithabharosa.hub.ui.screens.onboarding.OnboardingScreen
 import com.raithabharosa.hub.ui.screens.settings.SettingsScreen
 import com.raithabharosa.hub.ui.screens.trends.TrendScreen
+import com.raithabharosa.hub.ui.screens.chat.ChatScreen
 import com.raithabharosa.hub.ThemeManager
 import com.raithabharosa.hub.data.local.AppDatabase
 import kotlinx.coroutines.flow.first
@@ -40,6 +41,8 @@ fun AppNavigation(
     onThemeToggle: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    // ... (rest of the code)
+
     var hasFarmer by remember { 
         mutableStateOf(
             runBlocking(Dispatchers.IO) {
@@ -79,12 +82,25 @@ fun AppNavigation(
             DashboardScreen(
                 repository = repository,
                 calculateSowingIndex = calculateSowingIndex,
-                showKannadaLabels = showKannadaLabels
+                showKannadaLabels = showKannadaLabels,
+                onNavigateToMyCrops = {
+                    navController.navigate(Screen.History.route) {
+                        popUpTo(Screen.Dashboard.route) { saveState = true }
+                        restoreState = true
+                    }
+                }
             )
         }
 
         composable(Screen.Input.route) {
             InputScreen(
+                repository = repository,
+                showKannadaLabels = showKannadaLabels
+            )
+        }
+
+        composable(Screen.Chat.route) {
+            ChatScreen(
                 repository = repository,
                 showKannadaLabels = showKannadaLabels
             )
