@@ -168,7 +168,27 @@ object TranslationManager {
         "Notes" to "ಟಿಪ್ಪಣಿಗಳು",
         "Save Harvest" to "ಕೊಯ್ಲು ಉಳಿಸಿ",
         "Harvest saved!" to "ಕೊಯ್ಲು ಉಳಿತಾಯಿತು!",
-        "Harvest already recorded" to "ಕೊಯ್ಲು ಈಗಾಗಲೇ ದಾಖಲಾಗಿದೆ"
+        "Harvest already recorded" to "ಕೊಯ್ಲು ಈಗಾಗಲೇ ದಾಖಲಾಗಿದೆ",
+
+        // Settings Page
+        "Settings" to "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+        "Back" to "ಹಿಂದೆ",
+        "Preferences" to "ಆದ್ಯತೆಗಳು",
+        "Dark Mode" to "ಡಾರ್ಕ್ ಮೋಡ್",
+        "Enabled" to "ಸಕ್ರಿಯಗೊಳಿಸಿದೆ",
+        "Disabled" to "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದೆ",
+        "Account" to "ಖಾತೆ",
+        "Edit Profile" to "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+        "Update your name and crop details" to "ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಬೆಳೆ ವಿವರಗಳನ್ನು ನವೀಕರಿಸಿ",
+        "Update Location" to "ಸ್ಥಳ ನವೀಕರಿಸಿ",
+        "Not set" to "ಸಂತಾನಗೊಂಡಿಲ್ಲ",
+        "Logout" to "ಲಾಗ್‌ಔಟ್",
+        "Sign out of your account" to "ನಿಮ್ಮ ಖಾತೆಯಿಂದ ಹೊರಬನ್ನಿ",
+        "Are you sure you want to logout?" to "ನೀವು ಲಾಗ್‌ಔಟ್ ಮಾಡಲು ಬಯಸುವಿರಾ?",
+        "Enter your village/taluk location" to "ನಿಮ್ಮ ಗ್ರಾಮ/ತಾಲೂಕು ಸ್ಥಳವನ್ನು ನಮೂಸಿ",
+        "Save" to "ಉಳಿಸಿ",
+        "Name" to "ಹೆಸರು",
+        "Select Crop" to "ಬೆಳೆ ಆರಿಸಿ"
     )
     
     private val englishOnly = englishToKannada.keys.toList()

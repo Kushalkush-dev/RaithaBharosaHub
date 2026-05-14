@@ -19,11 +19,16 @@ import com.raithabharosa.hub.ui.screens.dashboard.DashboardScreen
 import com.raithabharosa.hub.ui.screens.history.HistoryScreen
 import com.raithabharosa.hub.ui.screens.input.InputScreen
 import com.raithabharosa.hub.ui.screens.onboarding.OnboardingScreen
+import com.raithabharosa.hub.ui.screens.settings.SettingsScreen
 import com.raithabharosa.hub.ui.screens.trends.TrendScreen
+import com.raithabharosa.hub.ThemeManager
+import com.raithabharosa.hub.data.local.AppDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AppNavigation(
@@ -32,20 +37,21 @@ fun AppNavigation(
     calculateSowingIndex: CalculateSowingIndexUseCase,
     generateActionPlan: GenerateActionPlanUseCase,
     showKannadaLabels: Boolean = false,
+    onThemeToggle: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    var hasFarmer by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(true) }
+    var hasFarmer by remember { 
+        mutableStateOf(
+            runBlocking(Dispatchers.IO) {
+                repository.getCurrentFarmer().first() != null
+            }
+        )
+    }
+    var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                val farmer = repository.getCurrentFarmer().first()
-                hasFarmer = farmer != null
-                isLoading = false
-            }
-        } catch (e: Exception) {
-            isLoading = false
+        repository.getCurrentFarmer().collect { farmer ->
+            hasFarmer = farmer != null
         }
     }
 
@@ -103,6 +109,20 @@ fun AppNavigation(
             TrendScreen(
                 repository = repository,
                 showKannadaLabels = showKannadaLabels
+            )
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                repository = repository,
+                showKannadaLabels = showKannadaLabels,
+                onThemeToggle = { onThemeToggle?.invoke() },
+                onBackClick = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate(Screen.Onboarding.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
     }

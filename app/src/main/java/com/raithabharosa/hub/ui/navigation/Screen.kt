@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -16,6 +17,7 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
     data object Calendar : Screen("calendar", Icons.Default.CalendarMonth, "Calendar")
     data object History : Screen("history", Icons.Default.History, "My Crops")
     data object Trends : Screen("trends", Icons.Default.ShowChart, "Trends")
+    data object Settings : Screen("settings", Icons.Default.Settings, "Settings")
 }
 
 val bottomNavItems = listOf(
