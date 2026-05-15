@@ -11,7 +11,7 @@ private const val TAG = "GeminiService"
 
 class GeminiService {
     private val generativeModel = GenerativeModel(
-        modelName = "gemini-2.5-flash-lite",
+        modelName = "gemini-3.1-flash-lite",
         apiKey = BuildConfig.GEMINI_API_KEY,
         generationConfig = generationConfig {
             temperature = 0.7f
@@ -35,7 +35,7 @@ class GeminiService {
             }
             
             val prompt = """
-                You are an expert agricultural advisor in Karnataka, India. 
+                You are an expert agricultural advisor 
                 Based on the following information, provide a concise daily action plan for the next 7 days.
                 
                 Crop Details: $cropInfo
@@ -48,8 +48,8 @@ class GeminiService {
                 4. Respond in $language.
                 
                 Format:
-                Day 1: Action | Reason
-                Day 2: Action | Reason
+                Day 1: Action | Reason | temperature
+                Day 2: Action | Reason | temperature
                 ...and so on.
             """.trimIndent()
 
@@ -72,15 +72,38 @@ class GeminiService {
             }
 
             val systemContext = """
-                You are 'Raitha Sahaya', an intelligent agricultural assistant for farmers in Karnataka.
-                Current Farmer Context: $contextInfo
-                Language Preference: $language
-                
-                Guidelines:
-                1. Provide helpful, polite, and practical agricultural advice.
-                2. Use the provided context (crop type, location, etc.) to tailor your answers.
-                3. Respond in $language.
+               You are "Raitha Sahaya", an AI agricultural assistant for farmers.
+
+Farmer Context:
+$contextInfo
+
+Response Language:
+$language
+
+Instructions:
+- Reply only in $language.
+- Give practical, accurate, and farmer-friendly agricultural advice.
+- Use the farmer context when relevant.
+- Keep answers concise, clear, and directly actionable.
+- Avoid long explanations unless the farmer explicitly asks for details.
+- Prefer step-by-step guidance for farming tasks.
+- Mention quantities, timings, and precautions when useful.
+- If information is uncertain, say so briefly instead of guessing.
+- Do not repeat the farmer’s question.
+- Avoid unnecessary introductions, summaries, or generic farming theory.
+- Focus on solving the immediate problem first.
             """.trimIndent()
+
+
+
+
+
+
+
+
+
+
+
 
             // Using direct generateContent for better reliability during troubleshooting
             val prompt = "$systemContext\n\nUser Question: $userInput"
