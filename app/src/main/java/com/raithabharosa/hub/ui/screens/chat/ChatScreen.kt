@@ -23,8 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,7 +50,7 @@ fun ChatScreen(
             }
         }
     )
-    
+
     val state by viewModel.state.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -136,17 +140,17 @@ fun LanguageSelectionScreen(
             fontWeight = FontWeight.Bold,
             lineHeight = 32.sp
         )
-        
+
         Spacer(modifier = Modifier.height(48.dp))
-        
+
         LanguageCard(
             title = "English",
             subtitle = "Chat in English",
             onClick = { onLanguageSelected("English") }
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         LanguageCard(
             title = "ಕನ್ನಡ (Kannada)",
             subtitle = "ಕನ್ನಡದಲ್ಲಿ ಸಂಭಾಷಿಸಿ",
@@ -254,12 +258,45 @@ fun ChatBubble(message: ChatMessage) {
             tonalElevation = 2.dp,
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
+            val styledText = remember(message.text) {
+                parseMarkdown(message.text)
+            }
             Text(
-                text = message.text,
+                text = styledText,
                 modifier = Modifier.padding(12.dp),
                 fontSize = 15.sp,
                 color = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+
+fun parseMarkdown(text: String): AnnotatedString {
+    return buildAnnotatedString {
+        val lines = text.split("\n")
+        lines.forEachIndexed { lineIndex, line ->
+            var currentLine = line
+            // Check for bullet point
+            val isBullet = currentLine.trim().startsWith("* ") || currentLine.trim().startsWith("- ")
+            if (isBullet) {
+                append("  • ")
+                currentLine = currentLine.trim().substring(2)
+            }
+
+            val boldRegex = Regex("""\*\*(.*?)\*\*""")
+            var lastIndex = 0
+            boldRegex.findAll(currentLine).forEach { matchResult ->
+                append(currentLine.substring(lastIndex, matchResult.range.first))
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(matchResult.groupValues[1])
+                }
+                lastIndex = matchResult.range.last + 1
+            }
+            append(currentLine.substring(lastIndex))
+
+            if (lineIndex < lines.size - 1) {
+                append("\n")
+            }
         }
     }
 }

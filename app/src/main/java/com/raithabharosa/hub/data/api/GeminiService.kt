@@ -108,7 +108,7 @@ Instructions:
             // Using direct generateContent for better reliability during troubleshooting
             val prompt = "$systemContext\n\nUser Question: $userInput"
             val response = generativeModel.generateContent(prompt)
-            
+
             response.text ?: "The AI returned an empty response."
         } catch (e: Exception) {
             Log.e(TAG, "Chat Error: ${e.message}", e)
